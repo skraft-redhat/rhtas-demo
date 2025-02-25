@@ -1,0 +1,1100 @@
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "subject": [
+    {
+      "name": "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app",
+      "digest": {
+        "sha256": "3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v0.2",
+  "predicate": {
+    "buildConfig": {
+      "tasks": [
+        {
+          "finishedOn": "2025-02-24T10:41:47Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "operator.tekton.dev/last-applied-hash": "f5ee8dac60b42f332caec8df0a7707adbb42f8c25155ce1314e7356c0781c17c",
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "tekton.dev/categories": "Git",
+                "tekton.dev/displayName": "git clone",
+                "tekton.dev/pipelines.minVersion": "0.38.0",
+                "tekton.dev/platforms": "linux/amd64,linux/s390x,linux/ppc64le,linux/arm64",
+                "tekton.dev/tags": "git"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "app.kubernetes.io/version": "0.9",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "operator.tekton.dev/operand-name": "openshift-pipelines-addons",
+                "operator.tekton.dev/provider-type": "redhat",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/clusterTask": "git-clone",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "git-clone",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "crtFileName": "ca-bundle.crt",
+              "deleteExisting": "true",
+              "depth": "1",
+              "gitInitImage": "registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:dd5c8d08d52e304a542921634ebe6b5ff3d63c5f68f6d644e88417859b173ec8",
+              "httpProxy": "",
+              "httpsProxy": "",
+              "noProxy": "",
+              "refspec": "",
+              "revision": "cfe43f66705df060e7161a407e07e290b24c25e2",
+              "sparseCheckoutDirectories": "",
+              "sslVerify": "true",
+              "subdirectory": "",
+              "submodules": "true",
+              "url": "https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/my-quarkus-app.git",
+              "userHome": "/home/git",
+              "verbose": "true"
+            }
+          },
+          "name": "git-clone",
+          "ref": {
+            "kind": "ClusterTask",
+            "name": "git-clone"
+          },
+          "results": [
+            {
+              "name": "commit",
+              "type": "string",
+              "value": "cfe43f66705df060e7161a407e07e290b24c25e2"
+            },
+            {
+              "name": "committer-date",
+              "type": "string",
+              "value": "1740393697"
+            },
+            {
+              "name": "url",
+              "type": "string",
+              "value": "https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/my-quarkus-app.git"
+            }
+          ],
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:41:38Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env sh\nset -eu\n\nif [ \"${PARAM_VERBOSE}\" = \"true\" ] ; then\n  set -x\nfi\n\nif [ \"${WORKSPACE_BASIC_AUTH_DIRECTORY_BOUND}\" = \"true\" ] ; then\n  cp \"${WORKSPACE_BASIC_AUTH_DIRECTORY_PATH}/.git-credentials\" \"${PARAM_USER_HOME}/.git-credentials\"\n  cp \"${WORKSPACE_BASIC_AUTH_DIRECTORY_PATH}/.gitconfig\" \"${PARAM_USER_HOME}/.gitconfig\"\n  chmod 400 \"${PARAM_USER_HOME}/.git-credentials\"\n  chmod 400 \"${PARAM_USER_HOME}/.gitconfig\"\nfi\n\nif [ \"${WORKSPACE_SSH_DIRECTORY_BOUND}\" = \"true\" ] ; then\n  cp -R \"${WORKSPACE_SSH_DIRECTORY_PATH}\" \"${PARAM_USER_HOME}\"/.ssh\n  chmod 700 \"${PARAM_USER_HOME}\"/.ssh\n  chmod -R 400 \"${PARAM_USER_HOME}\"/.ssh/*\nfi\n\nif [ \"${WORKSPACE_SSL_CA_DIRECTORY_BOUND}\" = \"true\" ] ; then\n   export GIT_SSL_CAPATH=\"${WORKSPACE_SSL_CA_DIRECTORY_PATH}\"\n   if [ \"${PARAM_CRT_FILENAME}\" != \"\" ] ; then\n      export GIT_SSL_CAINFO=\"${WORKSPACE_SSL_CA_DIRECTORY_PATH}/${PARAM_CRT_FILENAME}\"\n   fi\nfi\nCHECKOUT_DIR=\"${WORKSPACE_OUTPUT_PATH}/${PARAM_SUBDIRECTORY}\"\n\ncleandir() {\n  # Delete any existing contents of the repo directory if it exists.\n  #\n  # We don't just \"rm -rf ${CHECKOUT_DIR}\" because ${CHECKOUT_DIR} might be \"/\"\n  # or the root of a mounted volume.\n  if [ -d \"${CHECKOUT_DIR}\" ] ; then\n    # Delete non-hidden files and directories\n    rm -rf \"${CHECKOUT_DIR:?}\"/*\n    # Delete files and directories starting with . but excluding ..\n    rm -rf \"${CHECKOUT_DIR}\"/.[!.]*\n    # Delete files and directories starting with .. plus any other character\n    rm -rf \"${CHECKOUT_DIR}\"/..?*\n  fi\n}\n\nif [ \"${PARAM_DELETE_EXISTING}\" = \"true\" ] ; then\n  cleandir || true\nfi\n\ntest -z \"${PARAM_HTTP_PROXY}\" || export HTTP_PROXY=\"${PARAM_HTTP_PROXY}\"\ntest -z \"${PARAM_HTTPS_PROXY}\" || export HTTPS_PROXY=\"${PARAM_HTTPS_PROXY}\"\ntest -z \"${PARAM_NO_PROXY}\" || export NO_PROXY=\"${PARAM_NO_PROXY}\"\n\ngit config --global --add safe.directory \"${WORKSPACE_OUTPUT_PATH}\"\n/ko-app/git-init \\\n  -url=\"${PARAM_URL}\" \\\n  -revision=\"${PARAM_REVISION}\" \\\n  -refspec=\"${PARAM_REFSPEC}\" \\\n  -path=\"${CHECKOUT_DIR}\" \\\n  -sslVerify=\"${PARAM_SSL_VERIFY}\" \\\n  -submodules=\"${PARAM_SUBMODULES}\" \\\n  -depth=\"${PARAM_DEPTH}\" \\\n  -sparseCheckoutDirectories=\"${PARAM_SPARSE_CHECKOUT_DIRECTORIES}\"\ncd \"${CHECKOUT_DIR}\"\nRESULT_SHA=\"$(git rev-parse HEAD)\"\nEXIT_CODE=\"$?\"\nif [ \"${EXIT_CODE}\" != 0 ] ; then\n  exit \"${EXIT_CODE}\"\nfi\nRESULT_COMMITTER_DATE=\"$(git log -1 --pretty=%ct)\"\nprintf \"%s\" \"${RESULT_COMMITTER_DATE}\" > \"/tekton/results/committer-date\"\nprintf \"%s\" \"${RESULT_SHA}\" > \"/tekton/results/commit\"\nprintf \"%s\" \"${PARAM_URL}\" > \"/tekton/results/url\"\n",
+              "environment": {
+                "container": "clone",
+                "image": "oci://registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:d8cea87b41090baacbb0f85ee2a777556c3b15210fa1ae51697e8dc4a29e7cae"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "git-clone"
+          ],
+          "finishedOn": "2025-02-24T10:42:23Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "operator.tekton.dev/last-applied-hash": "95dd7ecefc89d1b885b9b2924e0ae5c7b407dcd7c80490f1abbebd75cfede605",
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "tekton.dev/pipelines.minVersion": "0.12.1",
+                "tekton.dev/tags": "build-tool"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "app.kubernetes.io/version": "0.2",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "operator.tekton.dev/operand-name": "openshift-pipelines-addons",
+                "operator.tekton.dev/provider-type": "redhat",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/clusterTask": "maven",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "package",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "CONTEXT_DIR": ".",
+              "GOALS": [
+                "package"
+              ],
+              "MAVEN_IMAGE": "registry.redhat.io/ubi8/openjdk-17@sha256:632e78989471859ca4ed1148b951a911f7e3b6e6516482be20967c4171612c55",
+              "MAVEN_MIRROR_URL": "",
+              "PROXY_HOST": "",
+              "PROXY_NON_PROXY_HOSTS": "",
+              "PROXY_PASSWORD": "",
+              "PROXY_PORT": "",
+              "PROXY_PROTOCOL": "http",
+              "PROXY_USER": "",
+              "SERVER_PASSWORD": "",
+              "SERVER_USER": ""
+            }
+          },
+          "name": "package",
+          "ref": {
+            "kind": "ClusterTask",
+            "name": "maven"
+          },
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:41:47Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env bash\n\n[[ -f /workspace/maven-settings/settings.xml ]] && \\\necho 'using existing /workspace/maven-settings/settings.xml' && exit 0\n\ncat > /workspace/maven-settings/settings.xml <<EOF\n<settings>\n  <servers>\n    <!-- The servers added here are generated from environment variables. Don't change. -->\n    <!-- ### SERVER's USER INFO from ENV ### -->\n  </servers>\n  <mirrors>\n    <!-- The mirrors added here are generated from environment variables. Don't change. -->\n    <!-- ### mirrors from ENV ### -->\n  </mirrors>\n  <proxies>\n    <!-- The proxies added here are generated from environment variables. Don't change. -->\n    <!-- ### HTTP proxy from ENV ### -->\n  </proxies>\n</settings>\nEOF\n\nxml=\"\"\nif [ -n \"\" -a -n \"\" ]; then\n  xml=\"<proxy>\\\n    <id>genproxy</id>\\\n    <active>true</active>\\\n    <protocol>http</protocol>\\\n    <host></host>\\\n    <port></port>\"\n  if [ -n \"\" -a -n \"\" ]; then\n    xml=\"$xml\\\n        <username></username>\\\n        <password></password>\"\n  fi\n  if [ -n \"\" ]; then\n    xml=\"$xml\\\n        <nonProxyHosts></nonProxyHosts>\"\n  fi\n  xml=\"$xml\\\n      </proxy>\"\n  sed -i \"s|<!-- ### HTTP proxy from ENV ### -->|$xml|\" /workspace/maven-settings/settings.xml\nfi\n\nif [ -n \"\" -a -n \"\" ]; then\n  xml=\"<server>\\\n    <id>serverid</id>\"\n  xml=\"$xml\\\n        <username></username>\\\n        <password></password>\"\n  xml=\"$xml\\\n      </server>\"\n  sed -i \"s|<!-- ### SERVER's USER INFO from ENV ### -->|$xml|\" /workspace/maven-settings/settings.xml\nfi\n\nif [ -n \"\" ]; then\n  xml=\"    <mirror>\\\n    <id>mirror.default</id>\\\n    <url></url>\\\n    <mirrorOf>central</mirrorOf>\\\n  </mirror>\"\n  sed -i \"s|<!-- ### mirrors from ENV ### -->|$xml|\" /workspace/maven-settings/settings.xml\nfi\n",
+              "environment": {
+                "container": "mvn-settings",
+                "image": "oci://registry.redhat.io/ubi8/ubi-minimal@sha256:11bb492c19d974e6f67be661e76691e977184e98aff1cfad365363ae9055cff0"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": [
+                "-s",
+                "/workspace/maven-settings/settings.xml",
+                "package"
+              ],
+              "entryPoint": "/usr/bin/mvn",
+              "environment": {
+                "container": "mvn-goals",
+                "image": "oci://registry.redhat.io/ubi8/openjdk-17@sha256:2c80c70a183318876d01f11309e81c89fbc564fe6dd0334fdd71cd3e43b9b27e"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "package"
+          ],
+          "finishedOn": "2025-02-24T10:42:46Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "scan-source",
+                "tekton.dev/task": "scan-code",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "scanImage": "docker.io/sonarsource/sonar-scanner-cli:10.0",
+              "sonarqubeHostUrl": "https://sonarqube-sonarqube.apps.cluster-865bg.865bg.sandbox2653.opentlc.com",
+              "sonarqubeProjectKey": "my-quarkus-app",
+              "sonarqubeProjectSecret": "my-quarkus-app-sonarqube-secret",
+              "verbose": "true"
+            }
+          },
+          "name": "scan-source",
+          "ref": {
+            "kind": "Task",
+            "name": "scan-code"
+          },
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:42:23Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "set -x\necho $(ls -a)\nsonar-scanner -X -Dsonar.projectKey=my-quarkus-app -Dsonar.sources=./ -Dsonar.host.url=https://sonarqube-sonarqube.apps.cluster-865bg.865bg.sandbox2653.opentlc.com -Dsonar.login=$SONAR_TOKEN_WEB_UI -Dsonar.java.binaries=target/classes\n",
+              "environment": {
+                "container": "scan-code",
+                "image": "oci://docker.io/sonarsource/sonar-scanner-cli@sha256:0bc49076468d2955948867620b2d98d67f0d59c0fd4a5ef1f0afc55cf86f2079"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "scan-source"
+          ],
+          "finishedOn": "2025-02-24T10:43:34Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "tekton.dev/pipelines.minVersion": "0.12.1",
+                "tekton.dev/tags": "image-build, appstudio, hacbs"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "app.kubernetes.io/version": "0.1",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "build.appstudio.redhat.com/build_type": "docker",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "build-sign-image",
+                "tekton.dev/task": "buildah",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "BUILDER_IMAGE": "quay.io/redhat-appstudio/buildah:v1.31.0@sha256:34f12c7b72ec2c28f1ded0c494b428df4791c909f1f174dd21b8ed6a57cf5ddb",
+              "COMMIT_SHA": "",
+              "CONTEXT": ".",
+              "DOCKERFILE": "./Dockerfile",
+              "DOCKER_AUTH": "",
+              "HERMETIC": "false",
+              "IMAGE": "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app",
+              "IMAGE_EXPIRES_AFTER": "",
+              "PREFETCH_INPUT": "",
+              "TLSVERIFY": "true"
+            }
+          },
+          "name": "build-sign-image",
+          "ref": {
+            "kind": "Task",
+            "name": "buildah"
+          },
+          "results": [
+            {
+              "name": "JAVA_COMMUNITY_DEPENDENCIES",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "BASE_IMAGES_DIGESTS",
+              "type": "string",
+              "value": "registry.access.redhat.com/ubi8/openjdk-11:1.11@sha256:f6d4c974e9ea0848846f965d963cfc6f9b31d22f5c4fbf81a727c1ab6a811cc5\n"
+            },
+            {
+              "name": "IMAGE_DIGEST",
+              "type": "string",
+              "value": "sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4"
+            },
+            {
+              "name": "IMAGE_URL",
+              "type": "string",
+              "value": "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app"
+            }
+          ],
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:42:47Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "echo $(ls -a)\nSOURCE_CODE_DIR=./\nif [ -e \"$SOURCE_CODE_DIR/$CONTEXT/$DOCKERFILE\" ]; then\n  dockerfile_path=\"$SOURCE_CODE_DIR/$CONTEXT/$DOCKERFILE\"\nelif [ -e \"$SOURCE_CODE_DIR/$DOCKERFILE\" ]; then\n  dockerfile_path=\"$SOURCE_CODE_DIR/$DOCKERFILE\"\nelif echo \"$DOCKERFILE\" | grep -q \"^https\\?://\"; then\n  echo \"Fetch Dockerfile from $DOCKERFILE\"\n  dockerfile_path=$(mktemp --suffix=-Dockerfile)\n  http_code=$(curl -s -L -w \"%{http_code}\" --output \"$dockerfile_path\" \"$DOCKERFILE\")\n  if [ $http_code != 200 ]; then\n    echo \"No Dockerfile is fetched. Server responds $http_code\"\n    exit 1\n  fi\n  http_code=$(curl -s -L -w \"%{http_code}\" --output \"$dockerfile_path.dockerignore.tmp\" \"$DOCKERFILE.dockerignore\")\n  if [ $http_code = 200 ]; then\n    echo \"Fetched .dockerignore from $DOCKERFILE.dockerignore\"\n    mv \"$dockerfile_path.dockerignore.tmp\" $SOURCE_CODE_DIR/$CONTEXT/.dockerignore\n  fi\nelse\n  echo \"Cannot find Dockerfile $DOCKERFILE\"\n  exit 1\nfi\nif [ -n \"$JVM_BUILD_WORKSPACE_ARTIFACT_CACHE_PORT_80_TCP_ADDR\" ] && grep -q '^\\s*RUN \\(./\\)\\?mvn' \"$dockerfile_path\"; then\n  sed -i -e \"s|^\\s*RUN \\(\\(./\\)\\?mvn\\(.*\\)\\)|RUN echo \\\"<settings><mirrors><mirror><id>mirror.default</id><url>http://$JVM_BUILD_WORKSPACE_ARTIFACT_CACHE_PORT_80_TCP_ADDR/v1/cache/default/0/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>\\\" > /tmp/settings.yaml; \\1 -s /tmp/settings.yaml|g\" \"$dockerfile_path\"\n  touch /var/lib/containers/java\nfi\n\n# Fixing group permission on /var/lib/containers\nchown root:root /var/lib/containers\n\nsed -i 's/^\\s*short-name-mode\\s*=\\s*.*/short-name-mode = \"disabled\"/' /etc/containers/registries.conf\n\n# Setting new namespace to run buildah - 2^32-2\necho 'root:1:4294967294' | tee -a /etc/subuid >> /etc/subgid\n\nif [ \"${HERMETIC}\" == \"true\" ]; then\n  BUILDAH_ARGS=\"--pull=never\"\n  UNSHARE_ARGS=\"--net\"\n  for image in $(grep -i '^\\s*FROM' \"$dockerfile_path\" | sed 's/--platform=\\S*//' | awk '{print $2}'); do\n    unshare -Ufp --keep-caps -r --map-users 1,1,65536 --map-groups 1,1,65536 -- buildah pull $image\n  done\n  echo \"Build will be executed with network isolation\"\nfi\n\nif [ -n \"${PREFETCH_INPUT}\" ]; then\n  cp -r cachi2 /tmp/\n  chmod -R go+rwX /tmp/cachi2\n  VOLUME_MOUNTS=\"--volume /tmp/cachi2:/cachi2\"\n  sed -i 's|^\\s*run |RUN . /cachi2/cachi2.env \\&\\& \\\\\\n    |i' \"$dockerfile_path\"\n  echo \"Prefetched content will be made available\"\nfi\n\nLABELS=(\n  \"--label\" \"build-date=$(date -u +'%Y-%m-%dT%H:%M:%S')\"\n  \"--label\" \"architecture=$(uname -m)\"\n  \"--label\" \"vcs-type=git\"\n)\n[ -n \"$COMMIT_SHA\" ] && LABELS+=(\"--label\" \"vcs-ref=$COMMIT_SHA\")\n[ -n \"$IMAGE_EXPIRES_AFTER\" ] && LABELS+=(\"--label\" \"quay.expires-after=$IMAGE_EXPIRES_AFTER\")\n\nunshare -Uf $UNSHARE_ARGS --keep-caps -r --map-users 1,1,65536 --map-groups 1,1,65536 -- buildah build \\\n  $VOLUME_MOUNTS \\\n  $BUILDAH_ARGS \\\n  ${LABELS[@]} \\\n  --tls-verify=$TLSVERIFY --no-cache \\\n  --ulimit nofile=4096:4096 \\\n  -f \"$dockerfile_path\" -t $IMAGE $SOURCE_CODE_DIR/$CONTEXT\n\ncontainer=$(buildah from --pull-never $IMAGE)\nbuildah mount $container | tee /workspace/container_path\necho $container > /workspace/container_name\n\n# Save the SBOM produced by Cachi2 so it can be merged into the final SBOM later\nif [ -n \"${PREFETCH_INPUT}\" ]; then\n  cp /tmp/cachi2/output/bom.json ./sbom-cachi2.json\nfi\n",
+              "environment": {
+                "container": "build",
+                "image": "oci://quay.io/redhat-appstudio/buildah@sha256:017ec8d3e8e1fefcd47fc11bde655fa9c8f09a279b690be98397875bd542fb44"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "syft dir:/workspace/source --output cyclonedx-json=/workspace/source/sbom-source.json\nfind $(cat /workspace/container_path) -xtype l -delete\nsyft dir:$(cat /workspace/container_path) --output cyclonedx-json=/workspace/source/sbom-image.json\n",
+              "environment": {
+                "container": "sbom-syft-generate",
+                "image": "oci://quay.io/redhat-appstudio/syft@sha256:f55389239e26db17a6caebbe50657e715f0732e973c6f04928bf1661b0d0257c"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "if [ -f /var/lib/containers/java ]; then\n  /opt/jboss/container/java/run/run-java.sh analyse-dependencies path $(cat /workspace/container_path) -s /workspace/source/sbom-image.json --task-run-name my-quarkus-app-run-build-grdxf-build-sign-image --publishers /tekton/results/SBOM_JAVA_COMPONENTS_COUNT\n  sed -i 's/^/ /' /tekton/results/SBOM_JAVA_COMPONENTS_COUNT # Workaround for SRVKP-2875\nelse\n  touch /tekton/results/JAVA_COMMUNITY_DEPENDENCIES\nfi\n",
+              "environment": {
+                "container": "analyse-dependencies-java-sbom",
+                "image": "oci://quay.io/redhat-appstudio/hacbs-jvm-build-request-processor@sha256:b198cf4b33dab59ce8ac25afd4e1001390db29ca2dec83dc8a1e21b0359ce743"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/bin/python3\nimport json\n\n# load SBOMs\nwith open(\"./sbom-image.json\") as f:\n  image_sbom = json.load(f)\n\nwith open(\"./sbom-source.json\") as f:\n  source_sbom = json.load(f)\n\n# fetch unique components from available SBOMs\ndef get_identifier(component):\n  return component[\"name\"] + '@' + component.get(\"version\", \"\")\n\nimage_sbom_components = image_sbom.get(\"components\", [])\nexisting_components = [get_identifier(component) for component in image_sbom_components]\n\nsource_sbom_components = source_sbom.get(\"components\", [])\nfor component in source_sbom_components:\n  if get_identifier(component) not in existing_components:\n    image_sbom_components.append(component)\n    existing_components.append(get_identifier(component))\n\nimage_sbom_components.sort(key=lambda c: get_identifier(c))\n\n# write the CycloneDX unified SBOM\nwith open(\"./sbom-cyclonedx.json\", \"w\") as f:\n  json.dump(image_sbom, f, indent=4)\n",
+              "environment": {
+                "container": "merge-syft-sboms",
+                "image": "oci://registry.access.redhat.com/ubi9/python-39@sha256:1dfa24e975d48540fe86959dcae6093e3c49efa75670486f18c0133ceeaa74d7"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "if [ -n \"${PREFETCH_INPUT}\" ]; then\n  echo \"Merging contents of sbom-cachi2.json into sbom-cyclonedx.json\"\n  /src/utils/merge_syft_sbom.py sbom-cachi2.json sbom-cyclonedx.json > sbom-temp.json\n  mv sbom-temp.json sbom-cyclonedx.json\nelse\n  echo \"Skipping step since no Cachi2 SBOM was produced\"\nfi\n",
+              "environment": {
+                "container": "merge-cachi2-sbom",
+                "image": "oci://quay.io/redhat-appstudio/cachi2@sha256:46097f22b57e4d48a3fce96d931e08ccfe3a3e6421362d5f9353961279078eef"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/bin/python3\nimport json\n\nwith open(\"./sbom-cyclonedx.json\") as f:\n  cyclonedx_sbom = json.load(f)\n\npurls = [{\"purl\": component[\"purl\"]} for component in cyclonedx_sbom.get(\"components\", []) if \"purl\" in component]\npurl_content = {\"image_contents\": {\"dependencies\": purls}}\n\nwith open(\"sbom-purl.json\", \"w\") as output_file:\n  json.dump(purl_content, output_file, indent=4)\n",
+              "environment": {
+                "container": "create-purl-sbom",
+                "image": "oci://registry.access.redhat.com/ubi9/python-39@sha256:1dfa24e975d48540fe86959dcae6093e3c49efa75670486f18c0133ceeaa74d7"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "# Expose base image digests\nbuildah images --format '{{ .Name }}:{{ .Tag }}@{{ .Digest }}' | grep -v $IMAGE > /tekton/results/BASE_IMAGES_DIGESTS\n\nbase_image_name=$(buildah inspect --format '{{ index .ImageAnnotations \"org.opencontainers.image.base.name\"}}' $IMAGE | cut -f1 -d'@')\nbase_image_digest=$(buildah inspect --format '{{ index .ImageAnnotations \"org.opencontainers.image.base.digest\"}}' $IMAGE)\ncontainer=$(buildah from --pull-never $IMAGE)\nbuildah copy $container sbom-cyclonedx.json sbom-purl.json /root/buildinfo/content_manifests/\nbuildah config -a org.opencontainers.image.base.name=${base_image_name} -a org.opencontainers.image.base.digest=${base_image_digest} $container\nbuildah commit $container $IMAGE\n\nstatus=-1\nmax_run=5\nsleep_sec=10\nfor run in $(seq 1 $max_run); do\n  status=0\n  [ \"$run\" -gt 1 ] && sleep $sleep_sec\n  echo \"Pushing sbom image to registry\"\n  buildah push \\\n    --tls-verify=$TLSVERIFY \\\n    --digestfile /workspace/source/image-digest $IMAGE \\\n    docker://$IMAGE && break || status=$?\ndone\nif [ \"$status\" -ne 0 ]; then\n    echo \"Failed to push sbom image to registry after ${max_run} tries\"\n    exit 1\nfi\n\ncat \"/workspace/source\"/image-digest | tee /tekton/results/IMAGE_DIGEST\necho -n \"$IMAGE\" | tee /tekton/results/IMAGE_URL\n",
+              "environment": {
+                "container": "inject-sbom-and-push",
+                "image": "oci://quay.io/redhat-appstudio/buildah@sha256:017ec8d3e8e1fefcd47fc11bde655fa9c8f09a279b690be98397875bd542fb44"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": [
+                "attach",
+                "sbom",
+                "--sbom",
+                "sbom-cyclonedx.json",
+                "--type",
+                "cyclonedx",
+                "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app"
+              ],
+              "entryPoint": "",
+              "environment": {
+                "container": "upload-sbom",
+                "image": "oci://quay.io/redhat-appstudio/cosign@sha256:c883d6f8d39148f2cea71bff4622d196d89df3e510f36c140c097b932f0dd5d5"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "build-sign-image"
+          ],
+          "finishedOn": "2025-02-24T10:43:53Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "tekton.dev/tags": "sbom, trustification"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "upload-sbom-to-tpa",
+                "tekton.dev/task": "upload-sbom-to-tpa",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "COMPONENT_ID": "my-quarkus-app",
+              "FAIL_IF_TRUSTIFICATION_NOT_CONFIGURED": "true",
+              "HTTP_RETRIES": "3",
+              "SBOMS_DIR": ".",
+              "TRUSTIFICATION_SECRET_NAME": "trustification-secret"
+            }
+          },
+          "name": "upload-sbom-to-tpa",
+          "ref": {
+            "kind": "Task",
+            "name": "upload-sbom-to-tpa"
+          },
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:43:34Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env bash\nset -o errexit -o nounset -o pipefail\n\nversion_lesser_equal() {\n  local first\n  first=\"$(printf \"%s\\n%s\" \"$1\" \"$2\" | sort --version-sort | head -n 1)\"\n  [ \"$1\" = \"$first\" ]\n}\n\nif [[ -f \"$TRUSTIFICATION_SECRET_PATH/supported_cyclonedx_version\" ]]; then\n  supported_version=\"$(cat \"$TRUSTIFICATION_SECRET_PATH/supported_cyclonedx_version\")\"\nelse\n  echo \"The '$TRUSTIFICATION_SECRET_NAME' secret does not set supported_cyclonedx_version, will not check SBOM versions\"\n  supported_version=\"\"\nfi\n\necho \"Looking for CycloneDX SBOMs in $SBOMS_DIR\"\n\nfind \"$SBOMS_DIR\" -type f | while read -r filepath; do\n  file_relpath=$(realpath \"$filepath\" --relative-base=\"$SBOMS_DIR\")\n\n  if [[ $filepath != *\"cyclonedx\"* ]]; then\n    continue\n  fi\n\n  if ! jq empty \"$filepath\" 2>/dev/null; then\n    echo \"$file_relpath: not JSON\"\n    continue\n  fi\n\n  if ! jq -e '.bomFormat == \"CycloneDX\"' \"$filepath\" >/dev/null; then\n    echo \"$file_relpath: not a CycloneDX SBOM\"\n    continue\n  fi\n\n  echo \"Found CycloneDX SBOM: $file_relpath\"\n  \n  # Your SBOM ultimately appears in the TPA UI with a name listed in this .json file. By\n  # default, Syft creates that name based on the filepath of the SBOM. If you want your SBOM to\n  # appear in the TPA UI with a more meaningful name, you must manually change it in the .json file\n  # you just downloaded. Specifically, you must replace the name in the .metadata.component\n  # object. You can optionally add a version field here, if you wish.\n  # This is why we've added the sed command to give the sbom a meaningful name\n  sed -i 's|\"/var/lib/containers/storage/vfs/dir/[^\"]*|\"my-quarkus-app|' $filepath\n  \n  # The 'id' of each SBOM is checksum of the original content, before (possibly)\n  # downgrading the CycloneDX version. The conversion always updates some metadata\n  # (timestamp, UUID), changing the checksum. To avoid duplication, use the original\n  # checksum.\n  sbom_id=\"sha256:$(sha256sum \"$filepath\" | cut -d ' ' -f 1)\"\n\n  # Symlink the discovered SBOMS to ${WORKDIR}/${sbom_id}.json so that subsequent steps\n  # don't have to look for them again.\n  sbom_path=\"$WORKDIR/$sbom_id.json\"\n  ln -s \"$(realpath \"$filepath\")\" \"$sbom_path\"\n\n  if [[ -n \"$supported_version\" ]]; then\n    sbom_version=\"$(jq -r \".specVersion\" \"$sbom_path\")\"\n\n    if version_lesser_equal \"$sbom_version\" \"$supported_version\"; then\n      echo \"SBOM version ($sbom_version) is supported (<= $supported_version), will not convert\"\n    else\n      echo \"SBOM version ($sbom_version) is not supported, will convert to $supported_version\"\n      printf \"%s\" \"$supported_version\" > \"${sbom_path}.convert_to_version\"\n    fi\n  fi\ndone\n\necho \"Found $(find \"$WORKDIR\" -name \"*.json\" | wc -l) CycloneDX SBOMs\"\n",
+              "environment": {
+                "container": "gather-sboms",
+                "image": "oci://quay.io/redhat-appstudio/appstudio-utils@sha256:8c7fcf86af40c71aeb58e4279625c8308af5144e2f6b8e28b0ec7e795260e5f7"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env bash\nset -o errexit -o nounset -o pipefail\n\n# Return zero matches when a glob doesn't match rather than returning the glob itself\nshopt -s nullglob\n\nfor sbom_path in \"$WORKDIR\"/*.json; do\n  conversion_attr=\"${sbom_path}.convert_to_version\"\n\n  if [[ -f \"$conversion_attr\" ]]; then\n    cdx_version=\"$(cat \"$conversion_attr\")\"\n    original_sbom_path=\"$(realpath \"$sbom_path\")\"\n    original_sbom_relpath=\"$(realpath \"$sbom_path\" --relative-base=\"$SBOMS_DIR\")\"\n\n    echo \"Converting $original_sbom_relpath to CycloneDX $cdx_version\"\n    syft convert \"$original_sbom_path\" -o \"cyclonedx-json@${cdx_version}=${sbom_path}.supported_version\"\n  else\n    # Just duplicate the symlink, the original SBOM already has a supported CDX version\n    cp --no-dereference \"$sbom_path\" \"${sbom_path}.supported_version\"\n  fi\ndone\n",
+              "environment": {
+                "container": "convert-sboms-if-needed",
+                "image": "oci://registry.redhat.io/rh-syft-tech-preview/syft-rhel9@sha256:27c268d678103a27b6964c2cd5169040941b7304d0078f9727789ffb8ffba370"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env bash\nset -o errexit -o nounset -o pipefail\n\nshopt -s nullglob\nsboms_to_upload=(\"$WORKDIR\"/*.json)\n\nif [[ \"${#sboms_to_upload[@]}\" -eq 0 ]]; then\n  echo \"No SBOMs to upload\"\n  exit 0\nfi\n\nread_required_secret_key() {\n  local key=\"$1\"\n  if [[ -f \"$TRUSTIFICATION_SECRET_PATH/$key\" ]]; then\n    cat \"$TRUSTIFICATION_SECRET_PATH/$key\"\n  else\n    echo \"Missing configuration: $key\" >&2\n    echo \"Does the '$TRUSTIFICATION_SECRET_NAME' secret exist in your namespace and contain the required keys?\" >&2\n    echo \"Refer to the description of this Task for details.\" >&2\n\n    if [[ \"$FAIL_IF_TRUSTIFICATION_NOT_CONFIGURED\" == \"false\" ]]; then\n      echo \"WARNING: FAIL_IF_TRUSTIFICATION_NOT_CONFIGURED=false; exiting with success\" >&2\n      exit 0\n    else\n      exit 1\n    fi\n  fi\n}\n\nbombastic_api_url=\"$(read_required_secret_key bombastic_api_url)\"\noidc_issuer_url=\"$(read_required_secret_key oidc_issuer_url)\"\noidc_client_id=\"$(read_required_secret_key oidc_client_id)\"\noidc_client_secret=\"$(read_required_secret_key oidc_client_secret)\"\n\ncurl_opts=(--silent --show-error --fail-with-body --retry \"$HTTP_RETRIES\")\n\n# https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig\nopenid_configuration_url=\"${oidc_issuer_url%/}/.well-known/openid-configuration\"\necho \"Getting OIDC issuer configuration from $openid_configuration_url\"\n# https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata\ntoken_endpoint=\"$(curl \"${curl_opts[@]}\" \"$openid_configuration_url\" | jq -r .token_endpoint)\"\n\nfor sbom_path in \"${sboms_to_upload[@]}\"; do\n  original_sbom_relpath=\"$(realpath \"$sbom_path\" --relative-base=\"$SBOMS_DIR\")\"\n  echo\n  echo \"--- Processing $original_sbom_relpath ---\"\n\n  echo \"Getting OIDC token from $token_endpoint\"\n  token_response=\"$(\n    curl \"${curl_opts[@]}\" \\\n      -u \"${oidc_client_id}:${oidc_client_secret}\" \\\n      -d \"grant_type=client_credentials\" \\\n      \"$token_endpoint\"\n  )\"\n  # https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1\n  access_token=\"$(jq -r .access_token <<< \"$token_response\")\"\n  token_type=\"$(jq -r .token_type <<< \"$token_response\")\"\n  expires_in=\"$(jq -r \".expires_in // empty\" <<< \"$token_response\")\"\n\n  retry_max_time=0  # no limit\n  if [[ -n \"$expires_in\" ]]; then\n    retry_max_time=\"$expires_in\"\n  fi\n\n  # This sbom_id is the one created in the gather-sboms step - sha256:${checksum}\n  sbom_id=\"$(basename -s .json \"$sbom_path\")\"\n  supported_version_of_sbom=\"${sbom_path}.supported_version\"\n\n  echo \"Uploading SBOM to $bombastic_api_url (with id=$sbom_id)\"\n  # https://docs.trustification.dev/trustification/user/bombastic.html#publishing-an-sbom-doc\n  curl \"${curl_opts[@]}\" \\\n    --retry-max-time \"$retry_max_time\" \\\n    -H \"authorization: $token_type $access_token\" \\\n    -H \"transfer-encoding: chunked\" \\\n    -H \"content-type: application/json\" \\\n    --data \"@$supported_version_of_sbom\" \\\n    \"$bombastic_api_url/api/v1/sbom?id=$sbom_id\"\ndone\n",
+              "environment": {
+                "container": "upload-sboms",
+                "image": "oci://quay.io/redhat-appstudio/appstudio-utils@sha256:8c7fcf86af40c71aeb58e4279625c8308af5144e2f6b8e28b0ec7e795260e5f7"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "build-sign-image"
+          ],
+          "finishedOn": "2025-02-24T10:43:54Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "task.output.location": "results",
+                "task.results.format": "application/text",
+                "task.results.key": "LINK_TO_SBOM",
+                "task.results.type": "external-link"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "upload-sbom-to-cyclonedx-repo",
+                "tekton.dev/task": "upload-sbom-to-cyclonedx-repo",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "cyclonedxHostUrl": "https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-865bg.865bg.sandbox2653.opentlc.com",
+              "image": "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app@sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4"
+            }
+          },
+          "name": "upload-sbom-to-cyclonedx-repo",
+          "ref": {
+            "kind": "Task",
+            "name": "upload-sbom-to-cyclonedx-repo"
+          },
+          "results": [
+            {
+              "name": "LINK_TO_SBOM",
+              "type": "string",
+              "value": "https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/v1/bom?serialNumber=urn%3Auuid%3A23ee1d69-0bff-443c-b6bc-5668a712aa3d&version=1\r"
+            }
+          ],
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:43:35Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": [
+                "download",
+                "sbom",
+                "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app@sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4",
+                "--output-file",
+                "bom.json"
+              ],
+              "entryPoint": "",
+              "environment": {
+                "container": "get-sbom",
+                "image": "oci://quay.io/redhat-appstudio/cosign@sha256:c883d6f8d39148f2cea71bff4622d196d89df3e510f36c140c097b932f0dd5d5"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "set +x\ncurl -X POST https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/v1/bom -H \"Content-Type: application/vnd.cyclonedx+json; version=1.4\" -H \"Accept: */*\" -d @bom.json -D /tmp/header.txt > /dev/null\nLOCATION=$(cat /tmp/header.txt | grep location: | awk '{print $2}' | sed 's|http:|https:|g')\necho $LOCATION\nprintf \"%s\" \"$LOCATION\" > \"/tekton/results/LINK_TO_SBOM\"\n",
+              "environment": {
+                "container": "export-sbom",
+                "image": "oci://registry.access.redhat.com/ubi9/ubi@sha256:5b31383dc409becda30333e0e571a1c4d6b9dae373a454e6e978fb7c778e17d9"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "upload-sbom-to-tpa",
+            "upload-sbom-to-cyclonedx-repo",
+            "build-sign-image"
+          ],
+          "finishedOn": "2025-02-24T10:44:05Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "task.output.location": "logs",
+                "task.results.container": "step-report",
+                "task.results.format": "application/json",
+                "task.results.type": "roxctl-image-check"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "acs-image-check",
+                "tekton.dev/task": "acs-image-check",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "image": "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app",
+              "image_digest": "sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4",
+              "insecure-skip-tls-verify": "true",
+              "rox_api_token": "my-quarkus-app-stackrox-token",
+              "rox_central_endpoint": "central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443"
+            }
+          },
+          "name": "acs-image-check",
+          "ref": {
+            "kind": "Task",
+            "name": "acs-image-check"
+          },
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:43:54Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env bash\nset +x\nIMAGE=quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app@sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4\ncurl -s -k -L -H \"Authorization: Bearer $ROX_API_TOKEN\" \\\n  \"https://central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443/api/cli/download/roxctl-linux\" \\\n  --output ./roxctl  \\\n  > /dev/null\nchmod +x ./roxctl  > /dev/null\n./roxctl image check \\\n  $( [ \"true\" = \"true\" ] && \\\n  echo -n \"--insecure-skip-tls-verify\") \\\n  -e \"central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443\" --image \"$IMAGE\" --output json > /workspace/reports/image-check\n",
+              "environment": {
+                "container": "rox-image-check",
+                "image": "oci://registry.access.redhat.com/ubi8/ubi-minimal@sha256:aa0750f98cbac46a1987d0208c1ec66224c0e5248b0ae79eec468efceb720886"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/bin/sh\ncat /workspace/reports/image-check\n",
+              "environment": {
+                "container": "report",
+                "image": "oci://quay.io/lrangine/crda-maven@sha256:d2bdfb8d2d9e6a822706b7b25b2ff3becfde440859ac459a5a501752a8451a4a"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "upload-sbom-to-tpa",
+            "upload-sbom-to-cyclonedx-repo",
+            "build-sign-image"
+          ],
+          "finishedOn": "2025-02-24T10:44:05Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "task.output.location": "logs",
+                "task.results.container": "step-report",
+                "task.results.format": "application/json",
+                "task.results.key": "SCAN_OUTPUT",
+                "task.results.type": "roxctl-image-scan"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "acs-image-scan",
+                "tekton.dev/task": "acs-image-scan",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "image": "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app",
+              "image_digest": "sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4",
+              "insecure-skip-tls-verify": "true",
+              "rox_api_token": "my-quarkus-app-stackrox-token",
+              "rox_central_endpoint": "central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443"
+            }
+          },
+          "name": "acs-image-scan",
+          "ref": {
+            "kind": "Task",
+            "name": "acs-image-scan"
+          },
+          "results": [
+            {
+              "name": "SCAN_OUTPUT",
+              "type": "string",
+              "value": "{\"vulnerabilities\":{\"critical\":3,\"high\":40,\"medium\":127,\"low\":89}}\n"
+            }
+          ],
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:43:54Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env bash\nset +x\nIMAGE=quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app@sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4\ncurl -s -k -L -H \"Authorization: Bearer $ROX_API_TOKEN\" \\\n  \"https://central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443/api/cli/download/roxctl-linux\" \\\n  --output ./roxctl  \\\n  > /dev/null\nchmod +x ./roxctl  > /dev/null\n./roxctl image scan \\\n  $( [ \"true\" = \"true\" ] && \\\n  echo -n \"--insecure-skip-tls-verify\") \\\n  -e \"central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443\" --image \"$IMAGE\" --output json > roxctl_output.json\ncat roxctl_output.json >  /workspace/reports/image-scan\n",
+              "environment": {
+                "container": "rox-image-scan",
+                "image": "oci://registry.access.redhat.com/ubi8/ubi-minimal@sha256:aa0750f98cbac46a1987d0208c1ec66224c0e5248b0ae79eec468efceb720886"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/bin/sh\njq -rce \\\n\"{vulnerabilities:{\ncritical: (.result.summary.CRITICAL),\nhigh: (.result.summary.IMPORTANT),\nmedium: (.result.summary.MODERATE),\nlow: (.result.summary.LOW)\n}}\" /workspace/reports/image-scan | tee /tekton/results/SCAN_OUTPUT\n",
+              "environment": {
+                "container": "export-vulnerabilities",
+                "image": "oci://quay.io/lrangine/crda-maven@sha256:d2bdfb8d2d9e6a822706b7b25b2ff3becfde440859ac459a5a501752a8451a4a"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/bin/sh\ncat /workspace/reports/image-scan\n",
+              "environment": {
+                "container": "report",
+                "image": "oci://quay.io/lrangine/crda-maven@sha256:d2bdfb8d2d9e6a822706b7b25b2ff3becfde440859ac459a5a501752a8451a4a"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "upload-sbom-to-tpa",
+            "upload-sbom-to-cyclonedx-repo"
+          ],
+          "finishedOn": "2025-02-24T10:44:05Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5",
+                "task.output.location": "logs",
+                "task.results.container": "step-report",
+                "task.results.format": "application/json",
+                "task.results.type": "roxctl-deployment-check"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "acs-deploy-check",
+                "tekton.dev/task": "acs-deploy-check",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "common_password_secret": "common-password-secret",
+              "component_id": "my-quarkus-app",
+              "git_host": "gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com",
+              "git_owner": "development",
+              "git_repository_revision": "master",
+              "insecure-skip-tls-verify": "true",
+              "rox_api_token": "my-quarkus-app-stackrox-token",
+              "rox_central_endpoint": "central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443",
+              "verbose": "true"
+            }
+          },
+          "name": "acs-deploy-check",
+          "ref": {
+            "kind": "Task",
+            "name": "acs-deploy-check"
+          },
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:43:54Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env sh\n\nset -eu -o pipefail\n\nif [[ \"true\" == \"true\" ]] ; then\n  set -x\n  echo \"**** Cloning https://root:$COMMON_PASSWORD@gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/my-quarkus-app-gitops into $(pwd)/repository\"\nfi\n\ngit clone \"https://root:$COMMON_PASSWORD@gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/my-quarkus-app-gitops\" $(pwd)/repository\ncd repository\ngit checkout \"master\"\n",
+              "environment": {
+                "container": "git-checkout",
+                "image": "oci://quay.io/redhat-gpte/alpine-git@sha256:222b2537e5ec606bda8ca38ea5f688845366f8cce036e368e19bc95af8e29ce4"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env sh\n\nset -eu -o pipefail\n\ncd repository/helm/app\n\nhelm template --dry-run . | awk -vout=out -F\": \" '$0~/^# Source: /{file=out\"/\"$2; print \"Creating \"file; system (\"mkdir -p $(dirname \"file\"); echo -n \"\" > \"file)} $0!~/^#/ && $0!=\"---\"{print $0 >> file}'\n",
+              "environment": {
+                "container": "helm-template",
+                "image": "oci://docker.io/alpine/helm@sha256:5c9c1df28b2da616287b9e13f2a8c670f7be015273cbd64e464df1bb5af545bd"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/usr/bin/env bash\n\nset +x\n\ncd /workspace/repository/helm/app/out/quarkus-template/templates\n\ncurl -s -k -L -H \"Authorization: Bearer $ROX_API_TOKEN\" \\\n  \"https://central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443/api/cli/download/roxctl-linux\" \\\n  --output ./roxctl  \\\n  > /dev/null\n\nchmod +x ./roxctl  > /dev/null\n\n./roxctl deployment check \\\n $( [ \"true\" = \"true\" ] && \\\n echo -n \"--insecure-skip-tls-verify\") \\\n -e \"central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443\" --file \"deployment.yaml\" --output json > roxctl_deployment_check.json\ncat roxctl_deployment_check.json >  /workspace/reports/deployment-check\n",
+              "environment": {
+                "container": "rox-deploy-scan",
+                "image": "oci://registry.access.redhat.com/ubi8@sha256:cc5aa5922a15039c18864a5111df8fd202fed3300ac42d0f916ad6d66f016a74"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "#!/bin/sh\ncat /workspace/reports/deployment-check\n",
+              "environment": {
+                "container": "report",
+                "image": "oci://quay.io/lrangine/crda-maven@sha256:d2bdfb8d2d9e6a822706b7b25b2ff3becfde440859ac459a5a501752a8451a4a"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "acs-image-check",
+            "acs-image-scan",
+            "acs-deploy-check",
+            "build-sign-image"
+          ],
+          "finishedOn": "2025-02-24T10:44:12Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "query-rekor-signed-provenance",
+                "tekton.dev/task": "rekor-signed-provenance",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "imageDigest": "sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4",
+              "rekorUrl": "http://rekor-server.trusted-artifact-signer.svc"
+            }
+          },
+          "name": "query-rekor-signed-provenance",
+          "ref": {
+            "kind": "Task",
+            "name": "rekor-signed-provenance"
+          },
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:44:05Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "UUID=$(rekor-cli search --sha sha256:3f27a0b29022b5a39cd3eddf731e8bdaeee683ca50974e0f997a780e35a03fc4 --rekor_server http://rekor-server.trusted-artifact-signer.svc)\nrekor-cli get --uuid $UUID --format json --rekor_server http://rekor-server.trusted-artifact-signer.svc > /workspace/rekor.get\n",
+              "environment": {
+                "container": "rekor-uuid-from-sha",
+                "image": "oci://quay.io/redhat-gpte/rekor-cli@sha256:0c9da8109f956e862059c57308178899007106c06eaf04af3d321b4bc3f704ba"
+              }
+            },
+            {
+              "annotations": null,
+              "arguments": null,
+              "entryPoint": "set -x\ncat /workspace/rekor.get | jq -r .\n",
+              "environment": {
+                "container": "pretty-print-attestation",
+                "image": "oci://quay.io/redhat-gpte/jq@sha256:8462cd1508761565c4e0b9a0d14a58d14583335abc2ac21dd70aff587b441f66"
+              }
+            }
+          ]
+        },
+        {
+          "after": [
+            "query-rekor-signed-provenance"
+          ],
+          "finishedOn": "2025-02-24T10:44:18Z",
+          "invocation": {
+            "configSource": {},
+            "environment": {
+              "annotations": {
+                "pipeline.tekton.dev/release": "fb1e3f5"
+              },
+              "labels": {
+                "app.kubernetes.io/managed-by": "tekton-pipelines",
+                "backstage.io/kubernetes-id": "my-quarkus-app",
+                "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+                "tekton.dev/memberOf": "tasks",
+                "tekton.dev/pipeline": "my-quarkus-app-build",
+                "tekton.dev/pipelineRun": "my-quarkus-app-run-build-grdxf",
+                "tekton.dev/pipelineRunUID": "327c0739-41ce-4103-a706-580a67f06efa",
+                "tekton.dev/pipelineTask": "resync",
+                "tekton.dev/task": "resync",
+                "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+                "triggers.tekton.dev/trigger": "commit-trig",
+                "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+                "type": "pipeline"
+              }
+            },
+            "parameters": {
+              "COMPONENT_ID": "my-quarkus-app"
+            }
+          },
+          "name": "resync",
+          "ref": {
+            "kind": "Task",
+            "name": "resync"
+          },
+          "serviceAccountName": "pipeline",
+          "startedOn": "2025-02-24T10:44:12Z",
+          "status": "Succeeded",
+          "steps": [
+            {
+              "annotations": null,
+              "arguments": [
+                "oc delete pod -n my-quarkus-app-dev -l app.kubernetes.io/instance=my-quarkus-app-dev"
+              ],
+              "entryPoint": "/bin/bash -c",
+              "environment": {
+                "container": "resync",
+                "image": "oci://quay.io/openshift/origin-cli@sha256:237c7b164535f8567b887d2dd4022cb86055dff2ca800e7f8b16a0337b938173"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "buildType": "tekton.dev/v1beta1/PipelineRun",
+    "builder": {
+      "id": "https://tekton.dev/chains/v2"
+    },
+    "invocation": {
+      "configSource": {},
+      "environment": {
+        "labels": {
+          "backstage.io/kubernetes-id": "my-quarkus-app",
+          "rht-gitops.com/janus-argocd": "my-quarkus-app-dev-build",
+          "tekton.dev/pipeline": "my-quarkus-app-build",
+          "triggers.tekton.dev/eventlistener": "my-quarkus-app-el",
+          "triggers.tekton.dev/trigger": "commit-trig",
+          "triggers.tekton.dev/triggers-eventid": "d8e919eb-479d-411e-84c7-62cba9a421b5",
+          "type": "pipeline"
+        }
+      },
+      "parameters": {
+        "certificate-identity": "user1@demo.redhat.com",
+        "common-password-secret": "common-password-secret",
+        "component-id": "my-quarkus-app",
+        "cyclonedx-host-url": "https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-865bg.865bg.sandbox2653.opentlc.com",
+        "git-host": "gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com",
+        "git-owner": "development",
+        "oidc-issuer": "https://keycloak-rhsso.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/auth/realms/openshift",
+        "output-image": "quay-865bg.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/quayadmin/my-quarkus-app",
+        "rekor-url": "http://rekor-server.trusted-artifact-signer.svc",
+        "sonarqube-host-url": "https://sonarqube-sonarqube.apps.cluster-865bg.865bg.sandbox2653.opentlc.com",
+        "sonarqube-project-key": "my-quarkus-app",
+        "sonarqube-project-secret": "my-quarkus-app-sonarqube-secret",
+        "source-branch": "cfe43f66705df060e7161a407e07e290b24c25e2",
+        "source-repo": "https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/my-quarkus-app.git",
+        "stackrox-endpoint": "central-stackrox.apps.cluster-865bg.865bg.sandbox2653.opentlc.com:443",
+        "stackrox-secret": "my-quarkus-app-stackrox-token",
+        "tuf-mirror": "http://tuf.trusted-artifact-signer.svc"
+      }
+    },
+    "materials": [
+      {
+        "digest": {
+          "sha256": "d8cea87b41090baacbb0f85ee2a777556c3b15210fa1ae51697e8dc4a29e7cae"
+        },
+        "uri": "oci://registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8"
+      },
+      {
+        "digest": {
+          "sha256": "11bb492c19d974e6f67be661e76691e977184e98aff1cfad365363ae9055cff0"
+        },
+        "uri": "oci://registry.redhat.io/ubi8/ubi-minimal"
+      },
+      {
+        "digest": {
+          "sha256": "2c80c70a183318876d01f11309e81c89fbc564fe6dd0334fdd71cd3e43b9b27e"
+        },
+        "uri": "oci://registry.redhat.io/ubi8/openjdk-17"
+      },
+      {
+        "digest": {
+          "sha256": "0bc49076468d2955948867620b2d98d67f0d59c0fd4a5ef1f0afc55cf86f2079"
+        },
+        "uri": "oci://docker.io/sonarsource/sonar-scanner-cli"
+      },
+      {
+        "digest": {
+          "sha256": "017ec8d3e8e1fefcd47fc11bde655fa9c8f09a279b690be98397875bd542fb44"
+        },
+        "uri": "oci://quay.io/redhat-appstudio/buildah"
+      },
+      {
+        "digest": {
+          "sha256": "f55389239e26db17a6caebbe50657e715f0732e973c6f04928bf1661b0d0257c"
+        },
+        "uri": "oci://quay.io/redhat-appstudio/syft"
+      },
+      {
+        "digest": {
+          "sha256": "b198cf4b33dab59ce8ac25afd4e1001390db29ca2dec83dc8a1e21b0359ce743"
+        },
+        "uri": "oci://quay.io/redhat-appstudio/hacbs-jvm-build-request-processor"
+      },
+      {
+        "digest": {
+          "sha256": "1dfa24e975d48540fe86959dcae6093e3c49efa75670486f18c0133ceeaa74d7"
+        },
+        "uri": "oci://registry.access.redhat.com/ubi9/python-39"
+      },
+      {
+        "digest": {
+          "sha256": "46097f22b57e4d48a3fce96d931e08ccfe3a3e6421362d5f9353961279078eef"
+        },
+        "uri": "oci://quay.io/redhat-appstudio/cachi2"
+      },
+      {
+        "digest": {
+          "sha256": "c883d6f8d39148f2cea71bff4622d196d89df3e510f36c140c097b932f0dd5d5"
+        },
+        "uri": "oci://quay.io/redhat-appstudio/cosign"
+      },
+      {
+        "digest": {
+          "sha256": "8c7fcf86af40c71aeb58e4279625c8308af5144e2f6b8e28b0ec7e795260e5f7"
+        },
+        "uri": "oci://quay.io/redhat-appstudio/appstudio-utils"
+      },
+      {
+        "digest": {
+          "sha256": "27c268d678103a27b6964c2cd5169040941b7304d0078f9727789ffb8ffba370"
+        },
+        "uri": "oci://registry.redhat.io/rh-syft-tech-preview/syft-rhel9"
+      },
+      {
+        "digest": {
+          "sha256": "5b31383dc409becda30333e0e571a1c4d6b9dae373a454e6e978fb7c778e17d9"
+        },
+        "uri": "oci://registry.access.redhat.com/ubi9/ubi"
+      },
+      {
+        "digest": {
+          "sha256": "aa0750f98cbac46a1987d0208c1ec66224c0e5248b0ae79eec468efceb720886"
+        },
+        "uri": "oci://registry.access.redhat.com/ubi8/ubi-minimal"
+      },
+      {
+        "digest": {
+          "sha256": "d2bdfb8d2d9e6a822706b7b25b2ff3becfde440859ac459a5a501752a8451a4a"
+        },
+        "uri": "oci://quay.io/lrangine/crda-maven"
+      },
+      {
+        "digest": {
+          "sha256": "222b2537e5ec606bda8ca38ea5f688845366f8cce036e368e19bc95af8e29ce4"
+        },
+        "uri": "oci://quay.io/redhat-gpte/alpine-git"
+      },
+      {
+        "digest": {
+          "sha256": "5c9c1df28b2da616287b9e13f2a8c670f7be015273cbd64e464df1bb5af545bd"
+        },
+        "uri": "oci://docker.io/alpine/helm"
+      },
+      {
+        "digest": {
+          "sha256": "cc5aa5922a15039c18864a5111df8fd202fed3300ac42d0f916ad6d66f016a74"
+        },
+        "uri": "oci://registry.access.redhat.com/ubi8"
+      },
+      {
+        "digest": {
+          "sha256": "0c9da8109f956e862059c57308178899007106c06eaf04af3d321b4bc3f704ba"
+        },
+        "uri": "oci://quay.io/redhat-gpte/rekor-cli"
+      },
+      {
+        "digest": {
+          "sha256": "8462cd1508761565c4e0b9a0d14a58d14583335abc2ac21dd70aff587b441f66"
+        },
+        "uri": "oci://quay.io/redhat-gpte/jq"
+      },
+      {
+        "digest": {
+          "sha256": "237c7b164535f8567b887d2dd4022cb86055dff2ca800e7f8b16a0337b938173"
+        },
+        "uri": "oci://quay.io/openshift/origin-cli"
+      },
+      {
+        "digest": {
+          "sha1": "cfe43f66705df060e7161a407e07e290b24c25e2"
+        },
+        "uri": "git+https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/my-quarkus-app.git"
+      }
+    ],
+    "metadata": {
+      "buildFinishedOn": "2025-02-24T10:44:18Z",
+      "buildStartedOn": "2025-02-24T10:41:38Z",
+      "completeness": {
+        "environment": false,
+        "materials": false,
+        "parameters": false
+      },
+      "reproducible": false
+    }
+  }
+}

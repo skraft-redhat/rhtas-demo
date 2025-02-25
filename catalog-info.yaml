@@ -1,0 +1,41 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "w-gitsign-poi"
+  description: "A cool quarkus app"
+  annotations:
+    argocd/app-selector: rht-gitops.com/janus-argocd=w-gitsign-poi-bootstrap
+    backstage.io/kubernetes-id: w-gitsign-poi
+    janus-idp.io/tekton: w-gitsign-poi
+    backstage.io/source-location: url:https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/w-gitsign-poi
+    backstage.io/techdocs-ref: url:https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/w-gitsign-poi
+    gitlab.com/project-slug: development/w-gitsign-poi
+    quay.io/repository-slug: "quayadmin/w-gitsign-poi"
+  tags:
+    - java
+    - quarkus
+  links:
+    - url: https://devspaces.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/#https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/w-gitsign-poi
+      title: OpenShift Dev Spaces (VS Code)
+      icon: web
+    - url: https://devspaces.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/#https://gitlab-gitlab.apps.cluster-865bg.865bg.sandbox2653.opentlc.com/development/w-gitsign-poi?che-editor=che-incubator/che-idea/latest
+      title: OpenShift Dev Spaces (JetBrains IntelliJ)
+      icon: web
+spec:
+  type: service
+  lifecycle: production
+  owner: "user1"
+  providesApis:
+    - "w-gitsign-poi"
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: "w-gitsign-poi"
+  description: "A cool quarkus app"
+spec:
+  type: openapi
+  lifecycle: production
+  owner: "user1"
+  definition:
+    $text: ./openapi.yaml

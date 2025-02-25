@@ -1,0 +1,105 @@
+components:
+- attestations:
+  - predicateBuildType: https://example.com/tekton-pipeline
+    predicateType: https://slsa.dev/provenance/v0.2
+    signatures:
+    - keyid: ""
+      sig: MEUCIQCqEeUHnObBxp6gr2WmS7daZaP09Ckv0zCxBPlGm+L8mwIgJ3obvJ5uGpB6p5P32V2bJFFRP/mnFg+CDQ0r1WB+spc=
+    type: https://in-toto.io/Statement/v0.1
+  containerImage: quay.io/stephan_kraft/nginx@sha256:7b1bef263bc29e04215b0893b3a8d3b5b8148c9fbcdff755d7df7c1c0e9b5d59
+  name: Unnamed
+  signatures:
+  - keyid: ""
+    sig: MEYCIQCoxZ0NLV9/QAB7xHbtiY/M//FQdldQVYQzrcgf+zSDTwIhAL6NyRX+d+xJ0wAZZQbwHAsJKxECkhCutvdGy7Qf97h7
+  source: {}
+  success: false
+  successes:
+  - metadata:
+      code: builtin.attestation.signature_check
+    msg: Pass
+  - metadata:
+      code: builtin.attestation.syntax_check
+    msg: Pass
+  - metadata:
+      code: builtin.image.signature_check
+    msg: Pass
+  - metadata:
+      code: slsa_build_build_service.allowed_builder_ids_provided
+    msg: Pass
+  - metadata:
+      code: slsa_build_build_service.slsa_builder_id_accepted
+    msg: Pass
+  - metadata:
+      code: slsa_build_build_service.slsa_builder_id_found
+    msg: Pass
+  - metadata:
+      code: slsa_build_scripted_build.build_script_used
+    msg: Pass
+  - metadata:
+      code: slsa_build_scripted_build.build_task_image_results_found
+    msg: Pass
+  - metadata:
+      code: slsa_build_scripted_build.subject_build_task_matches
+    msg: Pass
+  - metadata:
+      code: slsa_provenance_available.allowed_predicate_types_provided
+    msg: Pass
+  - metadata:
+      code: slsa_provenance_available.attestation_predicate_type_accepted
+    msg: Pass
+  - metadata:
+      code: slsa_source_correlated.expected_source_code_reference
+    msg: Pass
+  - metadata:
+      code: slsa_source_correlated.rule_data_provided
+    msg: Pass
+  - metadata:
+      code: slsa_source_version_controlled.materials_format_okay
+    msg: Pass
+  - metadata:
+      code: slsa_source_version_controlled.materials_include_git_sha
+    msg: Pass
+  - metadata:
+      code: slsa_source_version_controlled.materials_uri_is_git_repo
+    msg: Pass
+  - metadata:
+      code: tasks.pipeline_has_tasks
+    msg: Pass
+  - metadata:
+      code: tasks.successful_pipeline_tasks
+    msg: Pass
+  violations:
+  - metadata:
+      code: slsa_source_correlated.attested_source_code_reference
+    msg: The attested material contains no source code reference
+  warnings:
+  - metadata:
+      code: slsa_source_correlated.source_code_reference_provided
+    msg: Expected source code reference was not provided for verification
+ec-version: v0.4.79+redhat
+effective-time: "2025-02-24T17:48:49.280082571Z"
+key: |
+  -----BEGIN PUBLIC KEY-----
+  MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEOBLO7GasQ2OlVPmVYOo2eJjqsi7V
+  EMoSqbwHcy6CYB18YqpXEGXSuM3FkLh5UFbw8A8FqGXbSCH37mI1GDR3Qw==
+  -----END PUBLIC KEY-----
+policy:
+  description: Includes rules for levels 1, 2 & 3 of SLSA v0.1. This is the default
+    config used for new Konflux applications. Available collections are defined in
+    https://redhat-appstudio.github.io/docs.stonesoup.io/ec-policies/release_policy.html#_available_rule_collections.
+    If a different policy configuration is desired, this resource can serve as a starting
+    point. See the docs on how to include and exclude rules https://redhat-appstudio.github.io/docs.stonesoup.io/ec-policies/policy_configuration.html#_including_and_excluding_rules.
+  name: Default
+  publicKey: cosign.pub
+  sources:
+  - config:
+      include:
+      - '@slsa3'
+    data:
+    - oci::quay.io/redhat-appstudio-tekton-catalog/data-acceptable-bundles:1714135376
+    - github.com/redhat-gpe/rhtap-ec-policy//data
+    name: Default
+    policy:
+    - github.com/redhat-gpe/ec-policies//policy/lib
+    - github.com/redhat-gpe/ec-policies//policy/release
+success: false
