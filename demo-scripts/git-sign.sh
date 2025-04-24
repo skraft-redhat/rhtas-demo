@@ -145,6 +145,8 @@ p "Now let's try it out with the full-blown verification"
 
 pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-oidc-issuer=$MY_SIGSTORE_OIDC_ISSUER"
 
+cmd
+
 p "Great. This looks good. This command would typically be part of a deployment pipeline!"
 
 wait
