@@ -119,7 +119,7 @@ pe "gitsign verify $git_commit_SHA"
 
 p "Uhhh, gitsign is very strict. Just ANY signature is not enough for validation. We need the actual user AND the OIDC_ISSUER"
 
-pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-identity=$MY_SIGSTORE_OIDC_ISSUER"
+pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-oidc-issuer=$MY_SIGSTORE_OIDC_ISSUER"
 
 p "Great. This looks good. This command would typically be part of a deployment pipeline!"
 
