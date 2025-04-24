@@ -111,11 +111,11 @@ pe "git cat-file commit HEAD"
 
 p "Just as a note: gitsign uses a slightly different (a so-called \"canonical\" format as the payload for the hash and the signature"
 
-pe "The actual git commit SHA is: "
+p "The actual git commit SHA is: "
 
 pe "git_commit_SHA=$(git rev-parse HEAD)"
 
-pe "gitsign verify commit $gitcommit_SHA"
+pe "gitsign verify commit $git_commit_SHA"
 
 p "Great. This looks good. This command would typically be part of a deployment pipeline!"
 
