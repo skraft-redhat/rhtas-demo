@@ -17,6 +17,12 @@ git config --local --unset gitsign.clientID
 git config --local --unset user.name
 git config --local --unset user.email
 
+rm -rf ~/.sigstore/root
+
+unset SIGSTORE_FULCIO_URL
+unset SIGSTORE_OIDC_ISSUER
+unset SIGSTORE_REKOR_URL
+
 # setting the environment variables for RHTAS
 export MY_SIGSTORE_OIDC_ISSUER=https://$(oc get route keycloak -n rhsso | tail -n 1 | awk '{print $2}')/auth/realms/openshift
 export MY_SIGSTORE_FULCIO_URL=$(oc get fulcio -o jsonpath='{.items[0].status.url}' -n trusted-artifact-signer)
