@@ -113,7 +113,7 @@ p "Just as a note: gitsign uses a slightly different (a so-called \"canonical\" 
 
 pe "The actual git commit SHA is: "
 
-pe "git_commit_SHA=git rev-parse HEAD"
+pe "git_commit_SHA=$(git rev-parse HEAD)"
 
 pe "gitsign verify commit $gitcommit_SHA"
 
