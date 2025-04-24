@@ -109,13 +109,17 @@ p "But let's first try to understand better what actually the payload of a signe
 
 pe "git cat-file commit HEAD"
 
-p "Just as a note: gitsign uses a slightly different (a so-called \"canonical\" format as the payload for the hash and the signature"
+p "Just as a note: gitsign uses a slightly different (a so-called CANONICAL format) as the payload for the hash and the signature"
 
 p "The actual git commit SHA is: "
 
 pe "git_commit_SHA=$(git rev-parse HEAD)"
 
-pe "gitsign verify commit $git_commit_SHA"
+pe "gitsign verify $git_commit_SHA"
+
+p "Uhhh, gitsign is very strict. Just ANY signature is not enough for validation. We need the actual user AND the OIDC_ISSUER"
+
+pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-identity=$MY_SIGSTORE_OIDC_ISSUER"
 
 p "Great. This looks good. This command would typically be part of a deployment pipeline!"
 
