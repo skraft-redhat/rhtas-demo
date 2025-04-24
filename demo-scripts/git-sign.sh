@@ -115,7 +115,7 @@ clear
 p "But actually, signing alone doesn't help anybody. We always have to verfiy at a certain point in time that the signature is valid AND has been performed by an authorized person."
 p "================================================================================================================================================================================="
 
-p "This is what \'gitsign verify\' does."
+p "This is what gitsign verify does."
 
 p "But let's first try to understand better what actually the payload of a signed commit is"
 
@@ -131,10 +131,17 @@ pe "gitsign verify $git_commit_SHA"
 
 p "Uhhh, gitsign is very strict. Just ANY signature is not enough for validation. We need the actual user AND the OIDC_ISSUER"
 
+wait
+
 # cosign initialize
 
 export TUF_URL=$(oc get tuf -o jsonpath='{.items[0].status.url}' -n trusted-artifact-signer)
+export COSIGN_REKOR_URL=$(oc get rekor -o jsonpath='{.items[0].status.url}' -n trusted-artifact-signer)
 cosign initialize
+
+clear
+
+p "Now let's try it out with the full-blown verification"
 
 pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-oidc-issuer=$MY_SIGSTORE_OIDC_ISSUER"
 
