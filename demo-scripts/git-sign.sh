@@ -141,8 +141,9 @@ cosign initialize
 
 clear
 
-p "Now let's try it out with the full-blown verification"
+p "Now let's try it out with the full-blown verification. Let's check whether we are pointing to the right transparency log instance."
 
+pe "echo $COSIGN_REKOR_URL"
 pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-oidc-issuer=$MY_SIGSTORE_OIDC_ISSUER"
 
 cmd
