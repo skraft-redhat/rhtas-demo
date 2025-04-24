@@ -19,20 +19,20 @@ git config --local --unset user.email
 
 rm -rf ~/.sigstore/root
 
-#unset SIGSTORE_FULCIO_URL
-#unset SIGSTORE_OIDC_ISSUER
-#unset SIGSTORE_REKOR_URL
-#unset TUF_URL
-#unset OIDC_ISSUER_URL
-#unset COSIGN_FULCIO_URL
-#unset COSIGN_REKOR_URL
-#unset COSIGN_MIRROR
-#unset COSIGN_ROOT
-#unset COSIGN_OIDC_CLIENT_ID
-#unset COSIGN_OIDC_ISSUER
-#unset COSIGN_CERTIFICATE_OIDC_ISSUER
-#unset COSIGN_YES
-#unset REKOR_REKOR_SERVER
+unset SIGSTORE_FULCIO_URL
+unset SIGSTORE_OIDC_ISSUER
+unset SIGSTORE_REKOR_URL
+unset TUF_URL
+unset OIDC_ISSUER_URL
+unset COSIGN_FULCIO_URL
+unset COSIGN_REKOR_URL
+unset COSIGN_MIRROR
+unset COSIGN_ROOT
+unset COSIGN_OIDC_CLIENT_ID
+unset COSIGN_OIDC_ISSUER
+unset COSIGN_CERTIFICATE_OIDC_ISSUER
+unset COSIGN_YES
+unset REKOR_REKOR_SERVER
 
 
 # setting the environment variables for RHTAS
@@ -146,7 +146,7 @@ p "Now let's try it out with the full-blown verification. Let's check whether we
 pe "echo $COSIGN_REKOR_URL"
 pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-oidc-issuer=$MY_SIGSTORE_OIDC_ISSUER"
 
-cmd
+repl
 
 p "Great. This looks good. This command would typically be part of a deployment pipeline!"
 
