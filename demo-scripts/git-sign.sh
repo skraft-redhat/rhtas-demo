@@ -22,6 +22,18 @@ rm -rf ~/.sigstore/root
 unset SIGSTORE_FULCIO_URL
 unset SIGSTORE_OIDC_ISSUER
 unset SIGSTORE_REKOR_URL
+unset TUF_URL
+unset OIDC_ISSUER_URL
+unset COSIGN_FULCIO_URL
+unset COSIGN_REKOR_URL
+unset COSIGN_MIRROR
+unset COSIGN_ROOT
+unset COSIGN_OIDC_CLIENT_ID
+unset COSIGN_OIDC_ISSUER
+unset COSIGN_CERTIFICATE_OIDC_ISSUER
+unset COSIGN_YES
+unset REKOR_REKOR_SERVER
+
 
 # setting the environment variables for RHTAS
 export MY_SIGSTORE_OIDC_ISSUER=https://$(oc get route keycloak -n rhsso | tail -n 1 | awk '{print $2}')/auth/realms/openshift
@@ -118,6 +130,11 @@ pe "git_commit_SHA=$(git rev-parse HEAD)"
 pe "gitsign verify $git_commit_SHA"
 
 p "Uhhh, gitsign is very strict. Just ANY signature is not enough for validation. We need the actual user AND the OIDC_ISSUER"
+
+# cosign initialize
+
+export TUF_URL=$(oc get tuf -o jsonpath='{.items[0].status.url}' -n trusted-artifact-signer)
+cosign initialize
 
 pe "gitsign verify $git_commit_SHA --certificate-identity=user1@demo.redhat.com --certificate-oidc-issuer=$MY_SIGSTORE_OIDC_ISSUER"
 
